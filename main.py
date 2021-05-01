@@ -2,33 +2,40 @@ import numpy as np
 
 def getLU(arr: np.array, n: int):
     l = np.zeros((n,n))
-    r = 0
-    pivot_pos=[0,0]
-    for i in range(n):
-        for j in range(n):
-            if i==j:
-                l[i][j]=1
-                r = arr[i][j]
-            elif j>i:
-                l[i][j]=0
-            else:
-                pass
-
-def getU(arr: np.array, n: int):
-    l = np.array(arr,copy=True)
+    u = np.array(arr,copy=True)
     pivot_row=0
     pivot_col=0
     for j in range(n):
-        val = l[pivot_row][pivot_col]
+        val = u[pivot_row][pivot_col]
+        for i in range(n):
+            if i>pivot_row: 
+                l[i][j]=u[i][j]/val
+                if u[i][j]!= 0:
+                    x= u[i][j]/val
+                    u[i]=u[i]-x*u[pivot_row]
+            else:
+                l[i][j]=0
+            if i==j:
+                l[i][j]=1
+        pivot_col=pivot_col+1
+        pivot_row=pivot_row+1  
+    return l,u
+
+def getU(arr: np.array, n: int):
+    u = np.array(arr,copy=True)
+    pivot_row=0
+    pivot_col=0
+    for j in range(n):
+        val = u[pivot_row][pivot_col]
         for i in range(n):
             if i>pivot_row: 
                 print(val)
-                if l[i][j]!= 0:
-                    x= l[i][j]/val
-                    l[i]=l[i]-x*l[pivot_row]
+                if u[i][j]!= 0:
+                    x= u[i][j]/val
+                    u[i]=u[i]-x*u[pivot_row]
         pivot_col=pivot_col+1
         pivot_row=pivot_row+1  
-    return l
+    return u
 def forSubs():
     pass
 
@@ -41,5 +48,5 @@ if __name__=="__main__":
     arr = np.empty((n,n))
     for i in range(n):
         arr[i] = [int(x) for x in input().split()]
-    U = getU(arr,n)
-    print(U)
+    L,U = getLU(arr,n)
+    print(L)
